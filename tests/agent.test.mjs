@@ -1,0 +1,17 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';import {analyze,preview} from '../src/decision.mjs';import {PumpFunAdapter} from '../src/adapters/pumpfun.mjs';import {save} from '../src/storage.mjs';const s=JSON.parse(await readFile(new URL('../data/market.example.json',import.meta.url)));const c=JSON.parse(await readFile(new URL('../config/default.json',import.meta.url)));const now=Date.parse(s.observedAt);
+test('identity and no inherited wallet',()=>{assert.equal(c.agentName,'BENKO');assert.equal(c.wallet,null);});
+test('sample watch never executable',()=>{const d=analyze(s,c,now);assert.equal(d.decision,'WATCH');assert.equal(d.executable,false);assert.equal(d.sample,true);});
+test('stale rejected',()=>assert.equal(analyze(s,c,now+60000).decision,'REJECT'));
+test('future rejected',()=>assert.equal(analyze(s,c,now-1).decision,'REJECT'));
+test('order limit',()=>assert.equal(analyze({...s,orderSol:1},c,now).decision,'REJECT'));
+test('exposure limit',()=>assert.equal(analyze({...s,exposureSol:1},c,now).decision,'REJECT'));
+test('low liquidity',()=>assert.equal(analyze({...s,liquiditySol:1},c,now).decision,'REJECT'));
+test('invalid number',()=>assert.equal(analyze({...s,top10Percent:NaN},c,now).decision,'REJECT'));
+test('unsupported quote',()=>assert.equal(analyze({...s,quote:'USDC'},c,now).decision,'REJECT'));
+test('untrusted external snapshot',()=>assert.equal(analyze({...s,sample:false},c,now).decision,'REJECT'));
+test('missing sample flag',()=>assert.equal(analyze({...s,sample:undefined},c,now).decision,'REJECT'));
+test('invalid limits fail closed',()=>assert.throws(()=>analyze(s,{...c,maxOrderSol:-1},now)));
+test('preview has no tx',()=>{const p=preview(s,c,now);assert.equal(p.submitted,false);assert.equal(p.transaction,null);});
+test('live blocked',async()=>assert.rejects(()=>new PumpFunAdapter().submit(),/disabled/));
+test('config mode cannot enable trading',()=>assert.throws(()=>analyze(s,{...c,mode:'live'},now)));
+test('unique persisted records',async()=>{const d=await mkdtemp(join(tmpdir(),'benko-'));try{const a=await save({sample:true},d),b=await save({sample:true},d);assert.notEqual(a,b);assert.equal(JSON.parse(await readFile(a)).sample,true);}finally{await rm(d,{recursive:true,force:true});}});

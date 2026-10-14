@@ -1,0 +1,16 @@
+{
+  "name": "benko-pumpfun-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "demo": "node src/index.mjs demo",
+    "trade:preview": "node src/index.mjs preview",
+    "analyze": "node src/index.mjs analyze",
+    "live": "node src/index.mjs live"
+  }
+}

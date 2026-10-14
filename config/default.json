@@ -1,0 +1,13 @@
+{
+  "agentName": "BENKO",
+  "mode": "dry-run",
+  "wallet": null,
+  "maxAgeSeconds": 30,
+  "maxOrderSol": 0.05,
+  "maxExposureSol": 0.25,
+  "minLiquiditySol": 20,
+  "maxTop10Percent": 35,
+  "minBuyRatio": 0.6,
+  "minTrades": 30,
+  "slippageBps": 300
+}

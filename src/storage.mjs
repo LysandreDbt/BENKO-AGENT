@@ -1,0 +1,1 @@
+import {mkdir,writeFile} from 'node:fs/promises';import {randomUUID} from 'node:crypto';import {resolve} from 'node:path';export async function save(record,dir='outputs'){await mkdir(dir,{recursive:true});const file=resolve(dir,randomUUID()+'.json');await writeFile(file,JSON.stringify(record,null,2)+'\n',{flag:'wx',mode:0o600});return file;}

@@ -1,0 +1,15 @@
+{
+  "sample": true,
+  "source": "https://example.invalid/benko-fixture",
+  "observedAt": "2026-01-01T12:00:00Z",
+  "symbol": "BENKO_SAMPLE",
+  "mint": null,
+  "quote": "SOL",
+  "venue": "pump-bonding-curve",
+  "liquiditySol": 35,
+  "top10Percent": 22,
+  "buyCount": 48,
+  "sellCount": 12,
+  "orderSol": 0.03,
+  "exposureSol": 0.08
+}

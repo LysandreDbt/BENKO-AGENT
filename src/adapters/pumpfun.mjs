@@ -1,0 +1,1 @@
+export class PumpFunAdapter {async discover(){throw Error('Live discovery is not configured.');}async quote(){throw Error('Verified Pump/PumpSwap quoting is not implemented.');}async submit(){throw Error('Live trading is disabled: no signer, transaction builder or authorization.');}}
